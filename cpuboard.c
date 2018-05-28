@@ -6,96 +6,97 @@
  *	Descrioption:	simulation(emulation) of an instruction
  */
 
-#include	"cpuboard.h"
+#include    "cpuboard.h"
 
 /*=============================================================================
  *   Simulation of a Single Instruction
  *===========================================================================*/
 int step(Cpub *cpub) {
-	//   [ return RUN_STEP or RUN_HALT ]
-	Uword order_code = 0;
+    //aaaaa//
+    //   [ return RUN_STEP or RUN_HALT ]
+    Uword order_code = 0;
+    order_code = cpub->mem[cpub->pc] & 0xfc;
+    if (order_code == 0x0c) {
+        //000011-- HALT
+        return RUN_HALT;
+    }
 
-	order_code = cpub->mem[cpub->pc] & 0xfc;
-	if (order_code == 0x0c) {
-		//000011-- HALT
-		return RUN_HALT;
-	}
+    order_code = cpub->mem[cpub->pc] & 0xf8;
+    switch (order_code) {
+        case 0x00: //00000--- NOP
+            break;
+        case 0x10: //00010--- OUT
+            OUT(cpub);
+            break;
+        case 0x18: //00011--- IN
+            IN(cpub);
+            break;
+        case 0x20: //00010--- RCF
+            RCF(cpub);
+            break;
+        case 0x28: //00011--- SCF
+            SCF(cpub);
+            break;
+    }
 
-	order_code = cpub->mem[cpub->pc] & 0xf8;
-	switch (order_code) {
-	case 0x00: //00000--- NOP
-		break;
-	case 0x10: //00010--- OUT
-		OUT(cpub);
-		break;
-	case 0x18: //00011--- IN
-		IN(cpub);
-		break;
-	case 0x20: //00010--- RCF
-		RCF(cpub);
-		break;
-	case 0x28: //00011--- SCF
-		SCF(cpub);
-		break;
-	}
+    order_code = cpub->mem[cpub->pc] & 0xf0;
+    switch (order_code) {
+        case 0x60: //0110---- LD
+            LD(cpub);
+            break;
+        case 0x70: //0111---- ST
+            ST(cpub);
+            break;
+        case 0xb0: //1011---- ADD
+            ADD(cpub);
+            break;
+        case 0x90: //1001---- ADC
+            ADC(cpub);
+            break;
+        case 0xa0: //1010---- SUB
+            SUB(cpub);
+            break;
+        case 0x80: //1000---- SBC
+            SBC(cpub);
+            break;
+        case 0xf0: //1111---- CMP
+            CMP(cpub);
+            break;
+        case 0xe0: //1110---- AND
+            AND(cpub);
+            break;
+        case 0xd0: //1101---- OR
+            OR(cpub);
+            break;
+        case 0xc0: //1100---- EOR
+            EOR(cpub);
+            break;
+        case 0x40: //0100---- Shift or Rotate
+            SRsm(cpub);
+            break;
+        case 0x30: //0011---- Bbc
+            Bbc(cpub);
+            break;
+    }
 
-	order_code = cpub->mem[cpub->pc] & 0xf0;
-	switch (order_code) {
-	case 0x60: //0110---- LD
-		LD(cpub);
-		break;
-	case 0x70: //0111---- ST
-		ST(cpub);
-		break;
-	case 0xb0: //1011---- ADD
-		ADD(cpub);
-		break;
-	case 0x90: //1001---- ADC
-		ADC(cpub);
-		break;
-	case 0xa0: //1010---- SUB
-		SUB(cpub);
-		break;
-	case 0x80: //1000---- SBC
-		SBC(cpub);
-		break;
-	case 0xf0: //1111---- CMP
-		CMP(cpub);
-		break;
-	case 0xe0: //1110---- AND
-		AND(cpub);
-		break;
-	case 0xd0: //1101---- OR
-		OR(cpub);
-		break;
-	case 0xc0: //1100---- EOR
-		EOR(cpub);
-		break;
-	case 0x40: //0100---- Shift or Rotate
-		SRsm(cpub);
-		break;
-	case 0x30: //0011---- Bbc
-		Bbc(cpub);
-		break;
-	}
+    order_code = cpub->mem[cpub->pc] & 0xfc;
+    if (order_code == 0x0a) {
+        //00001010 JAL
+        JAL(cpub);
+    }
+    if (order_code == 0x0b) {
+        //00001011 JR
+        JR(cpub);
+    }
 
-	order_code = cpub->mem[cpub->pc] & 0xfc;
-	if (order_code == 0x0a) {
-		//00001010 JAL
-		JAL(cpub);
-	}
-	if (order_code == 0x0b) {
-		//00001011 JR
-		JR(cpub);
-	}
-
-	cpub->pc++;
-	return RUN_STEP;
+    cpub->pc++;
+    return RUN_STEP;
 }
 
 void OUT(Cpub *cpub) {
 
 }
+
 void IN(Cpub *cpub) {
 
 }
