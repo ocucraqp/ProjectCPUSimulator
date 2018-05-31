@@ -62,3 +62,5 @@ void SRsm(Cpub *);
 void Bbc(Cpub *);
 void JAL(Cpub *);
 void JR(Cpub *);
+int* JudgeArgA(Cpub *);
+int* JudgeArgB(Cpub *);

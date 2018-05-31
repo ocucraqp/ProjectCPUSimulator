@@ -118,6 +118,10 @@ void ST(Cpub *cpub) {
 }
 
 void ADD(Cpub *cpub) {
+    int* argA, argB;
+    argA = JudgeArgA(cpub);
+    argB = JudgeArgB(cpub);
+
 
 }
 
@@ -163,4 +167,38 @@ void JAL(Cpub *cpub) {
 
 void JR(Cpub *cpub) {
 
+}
+
+int* JudgeArgA(Cpub *cpub){
+    order_code = cpub->mem[cpub->pc] & 0x08;
+    //ACC or IX
+    if (order_code == 0x00) {
+        return &cpub->acc;
+    }else{
+        return &cpub->ix;
+    }
+}
+
+int* JudgeArgB(Cpub *cpub){
+    order_code = cpub->mem[cpub->pc] & 0x07;
+    //ACC or IX
+    switch (order_code){
+        case 0x00:
+            //000 ACC
+            return &cpub->acc;
+        case 0x01:
+            //001 IX
+            return &cpub->ix;
+        case 0x02:
+        case 0x03:
+            //01- d
+            cpub->pc++;
+            return ReadNextPC(cpub);
+        case 0x04:
+            //100 [d]
+            cpub->pc++;
+            return ReadNextPC(cpub);
+
+            //todo 処理
+    }
 }
