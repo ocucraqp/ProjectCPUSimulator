@@ -12,7 +12,6 @@
  *   Simulation of a Single Instruction
  *===========================================================================*/
 int step(Cpub *cpub) {
-    //aaaaa//
     //   [ return RUN_STEP or RUN_HALT ]
     Uword order_code = 0;
     order_code = cpub->mem[cpub->pc] & 0xfc;
@@ -43,40 +42,40 @@ int step(Cpub *cpub) {
     switch (order_code) {
         case 0x60: //0110---- LD
             LD(cpub);
-            break;
+            return RUN_STEP;
         case 0x70: //0111---- ST
             ST(cpub);
-            break;
+            return RUN_STEP;
         case 0xb0: //1011---- ADD
             ADD(cpub);
-            break;
+            return RUN_STEP;
         case 0x90: //1001---- ADC
             ADC(cpub);
-            break;
+            return RUN_STEP;
         case 0xa0: //1010---- SUB
             SUB(cpub);
-            break;
+            return RUN_STEP;
         case 0x80: //1000---- SBC
             SBC(cpub);
-            break;
+            return RUN_STEP;
         case 0xf0: //1111---- CMP
             CMP(cpub);
-            break;
+            return RUN_STEP;
         case 0xe0: //1110---- AND
             AND(cpub);
-            break;
+            return RUN_STEP;
         case 0xd0: //1101---- OR
             OR(cpub);
-            break;
+            return RUN_STEP;
         case 0xc0: //1100---- EOR
             EOR(cpub);
-            break;
+            return RUN_STEP;
         case 0x40: //0100---- Shift or Rotate
             SRsm(cpub);
-            break;
+            return RUN_STEP;
         case 0x30: //0011---- Bbc
             Bbc(cpub);
-            break;
+            return RUN_STEP;
     }
 
     order_code = cpub->mem[cpub->pc] & 0xfc;
@@ -112,11 +111,17 @@ void SCF(Cpub *cpub) {
 }
 
 void LD(Cpub *cpub) {
-    //todo
+    Uword *argA, *argB;
+    argA = JudgeArgA(cpub);
+    argB = JudgeArgB(cpub);
+    *argB = *argA;
 }
 
 void ST(Cpub *cpub) {
-    //todo
+    Uword *argA, *argB;
+    argA = JudgeArgA(cpub);
+    argB = JudgeArgB(cpub);
+    *argA = *argB;
 }
 
 void ADD(Cpub *cpub) {
@@ -211,19 +216,319 @@ void EOR(Cpub *cpub) {
 }
 
 void SRsm(Cpub *cpub) {
-    //todo
+    Uword order_code = 0;
+    order_code = cpub->mem[cpub->pc] & 0x07;
+    switch (order_code) {
+        case 0x00 :
+            Ssm(cpub);
+            break;
+        case 0x03 :
+            Rsm(cpub);
+            break;
+
+    }
+}
+
+void Ssm(Cpub *cpub) {
+    Uword order_code = 0;
+    order_code = cpub->mem[cpub->pc] & 0x03;
+    switch (order_code) {
+        case 0x00 :
+            SRA(cpub);
+            break;
+        case 0x01 :
+            SLA(cpub);
+            break;
+        case 0x02 :
+            SRL(cpub);
+            break;
+        case 0x03 :
+            SLL(cpub);
+            break;
+    }
+}
+
+void Rsm(Cpub *cpub) {
+    Uword order_code = 0;
+    order_code = cpub->mem[cpub->pc] & 0x03;
+    switch (order_code) {
+        case 0x00 :
+            RRA(cpub);
+            break;
+        case 0x01 :
+            RLA(cpub);
+            break;
+        case 0x02 :
+            RRL(cpub);
+            break;
+        case 0x03 :
+            RLL(cpub);
+            break;
+    }
+}
+
+void SRA(Cpub *cpub) {
+    Uword *argA;
+    Uword result;
+    argA = JudgeArgA(cpub);
+    result = *argA >> 1;
+    //keep most significant bit
+    if ((*argA & 0x80) == 0x80) {
+        result |= 0x80;
+    } else {
+        result &= 0x7f;
+    }
+
+    if ((*argA & 0x01) == 0x01) {
+        cpub->cf = 1;
+    } else {
+        cpub->cf = 0;
+    }
+    SetFlag(cpub, *argA, result, -1, 0, 2, 2);
+    *argA = result;
+}
+
+void SLA(Cpub *cpub) {
+    Uword *argA;
+    Uword result;
+    argA = JudgeArgA(cpub);
+    result = *argA << 1;
+    result &= 0xfe;
+
+    if ((*argA & 0x80) == 0x80) {
+        cpub->cf = 1;
+    } else {
+        cpub->cf = 0;
+    }
+    SetFlag(cpub, *argA, result, -1, 2, 2, 2);
+    *argA = result;
+}
+
+void SRL(Cpub *cpub) {
+    Uword *argA;
+    Uword result;
+    argA = JudgeArgA(cpub);
+    result = *argA >> 1;
+    result &= 0x7f;
+
+    if ((*argA & 0x01) == 0x01) {
+        cpub->cf = 1;
+    } else {
+        cpub->cf = 0;
+    }
+    SetFlag(cpub, *argA, result, -1, 0, 2, 2);
+    *argA = result;
+}
+
+void SLL(Cpub *cpub) {
+    Uword *argA;
+    Uword result;
+    argA = JudgeArgA(cpub);
+    result = *argA << 1;
+    result &= 0xfe;
+
+    if ((*argA & 0x80) == 0x80) {
+        cpub->cf = 1;
+    } else {
+        cpub->cf = 0;
+    }
+    SetFlag(cpub, *argA, result, -1, 0, 2, 2);
+    *argA = result;
+}
+
+void RRA(Cpub *cpub) {
+    Uword *argA;
+    Uword result;
+    argA = JudgeArgA(cpub);
+    result = *argA >> 1;
+    if (cpub->cf) {
+        result |= 0x80;
+    } else {
+        result &= 0x7f;
+    }
+
+    if ((*argA & 0x01) == 0x01) {
+        cpub->cf = 1;
+    } else {
+        cpub->cf = 0;
+    }
+    SetFlag(cpub, *argA, result, -1, 0, 2, 2);
+    *argA = result;
+}
+
+void RLA(Cpub *cpub) {
+    Uword *argA;
+    Uword result;
+    argA = JudgeArgA(cpub);
+    result = *argA << 1;
+    if (cpub->cf) {
+        result |= 0x01;
+    } else {
+        result &= 0xfe;
+    }
+
+    if ((*argA & 0x80) == 0x80) {
+        cpub->cf = 1;
+    } else {
+        cpub->cf = 0;
+    }
+    SetFlag(cpub, *argA, result, -1, 2, 2, 2);
+    *argA = result;
+}
+
+void RRL(Cpub *cpub) {
+    Uword *argA;
+    Uword result;
+    argA = JudgeArgA(cpub);
+    result = *argA >> 1;
+    if ((*argA & 0x01) == 0x01) {
+        result |= 0x80;
+    } else {
+        result &= 0x7f;
+    }
+
+    if ((*argA & 0x01) == 0x01) {
+        cpub->cf = 1;
+    } else {
+        cpub->cf = 0;
+    }
+    SetFlag(cpub, *argA, result, -1, 0, 2, 2);
+    *argA = result;
+}
+
+void RLL(Cpub *cpub) {
+    Uword *argA;
+    Uword result;
+    argA = JudgeArgA(cpub);
+    result = *argA << 1;
+    if ((*argA & 0x80) == 0x80) {
+        result |= 0x01;
+    } else {
+        result &= 0xfe;
+    }
+
+    if ((*argA & 0x80) == 0x80) {
+        cpub->cf = 1;
+    } else {
+        cpub->cf = 0;
+    }
+    SetFlag(cpub, *argA, result, -1, 0, 2, 2);
+    *argA = result;
 }
 
 void Bbc(Cpub *cpub) {
-    //todo
+    Uword order_code = 0;
+    order_code = cpub->mem[cpub->pc] & 0x0f;
+    cpub->pc++;
+    switch (order_code) {
+        case 0x00 :
+            //A
+            cpub->pc = cpub->mem[cpub->pc];
+            break;
+        case 0x08 :
+            //VF
+            if (cpub->vf == 1) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x01 :
+            //NZ
+            if (cpub->zf == 0) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x09 :
+            //Z
+            if (cpub->zf == 1) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+        case 0x02 :
+            //ZP
+            if (cpub->nf == 0) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x0a :
+            //N
+            if (cpub->nf == 1) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x03 :
+            //P
+            if ((cpub->nf) | ((cpub->zf)) == 0) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x0b :
+            //ZN
+            if ((cpub->nf) | ((cpub->zf)) == 1) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x04 :
+            //NI
+            if (cpub->ibuf->flag == 0) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x0c :
+            //NO
+            if (cpub->obuf.flag == 1) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x05 :
+            //NC
+            if (cpub->cf == 0) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x0d :
+            //C
+            if (cpub->cf == 1) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x06 :
+            //GE
+            if ((cpub->vf) ^ ((cpub->nf)) == 0) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x0e :
+            //LT
+            if (((cpub->vf) ^ (cpub->nf)) == 1) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x07 :
+            //GT
+            if ((((cpub->vf) ^ (cpub->nf)) | (cpub->zf)) == 0) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+        case 0x0f :
+            //LE
+            if ((((cpub->vf) ^ (cpub->nf)) | (cpub->zf)) == 1) {
+                cpub->pc = cpub->mem[cpub->pc];
+            }
+            break;
+    }
+
 }
 
+
 void JAL(Cpub *cpub) {
-    //todo
+    cpub->acc = cpub->pc + 2;
+    cpub->pc++;
+    cpub->pc = cpub->mem[cpub->pc];
+
+
 }
 
 void JR(Cpub *cpub) {
-    //todo
+    cpub->pc = cpub->acc;
 }
 
 Uword *JudgeArgA(Cpub *cpub) {
@@ -322,7 +627,7 @@ void SetFlag(Cpub *cpub, Uword argA, Uword flagSource, int cfFlag, int vfFlag,
     if (vfFlag >= 0) {
         if (((argA & 0x80) ^ (flagSource & 0x80)) | vfFlag == 1) {
             cpub->vf = 1;
-        }else {
+        } else {
             cpub->vf = 0;
         }
         if (vfFlag == 0) {
@@ -334,7 +639,7 @@ void SetFlag(Cpub *cpub, Uword argA, Uword flagSource, int cfFlag, int vfFlag,
     if (nfFlag >= 0) {
         if ((flagSource & 0x80) == 0x80 | nfFlag == 1) {
             cpub->nf = 1;
-        }else {
+        } else {
             cpub->nf = 0;
         }
         if (nfFlag == 0) {
@@ -346,7 +651,7 @@ void SetFlag(Cpub *cpub, Uword argA, Uword flagSource, int cfFlag, int vfFlag,
     if (zfFlag >= 0) {
         if (flagSource == 0x00 | zfFlag == 1) {
             cpub->zf = 1;
-        }else {
+        } else {
             cpub->zf = 0;
         }
         if (zfFlag == 0) {
