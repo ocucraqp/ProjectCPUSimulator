@@ -1,6 +1,3 @@
-#ifdef CPUBOARD_H
-#define CPUBOARD_H
-
 /*
  *	Project-based Learning II (CPU)
  *
@@ -92,5 +89,3 @@ Uword *JudgeArgB(Cpub *);
 Uword *ReadNextPC(Cpub *, int);
 
 void SetFlag(Cpub *, Uword, Uword, int, int, int, int);
-
-#endif CPUBOARD_H

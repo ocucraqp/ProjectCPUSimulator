@@ -310,6 +310,8 @@ void SetFlag(Cpub *cpub, Uword argA, Uword flagSource, int cfFlag, int vfFlag,
     if (cfFlag >= 0) {
         if (flagSource >= 0x100 | cfFlag == 1) {
             cpub->cf = 1;
+        } else {
+            cpub->cf = 0;
         }
         if (cfFlag == 0) {
             cpub->cf = 0;
@@ -320,6 +322,8 @@ void SetFlag(Cpub *cpub, Uword argA, Uword flagSource, int cfFlag, int vfFlag,
     if (vfFlag >= 0) {
         if (((argA & 0x80) ^ (flagSource & 0x80)) | vfFlag == 1) {
             cpub->vf = 1;
+        }else {
+            cpub->vf = 0;
         }
         if (vfFlag == 0) {
             cpub->vf = 0;
@@ -330,6 +334,8 @@ void SetFlag(Cpub *cpub, Uword argA, Uword flagSource, int cfFlag, int vfFlag,
     if (nfFlag >= 0) {
         if ((flagSource & 0x80) == 0x80 | nfFlag == 1) {
             cpub->nf = 1;
+        }else {
+            cpub->nf = 0;
         }
         if (nfFlag == 0) {
             cpub->nf = 0;
@@ -340,6 +346,8 @@ void SetFlag(Cpub *cpub, Uword argA, Uword flagSource, int cfFlag, int vfFlag,
     if (zfFlag >= 0) {
         if (flagSource == 0x00 | zfFlag == 1) {
             cpub->zf = 1;
+        }else {
+            cpub->zf = 0;
         }
         if (zfFlag == 0) {
             cpub->zf = 0;
