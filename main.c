@@ -35,6 +35,8 @@ Cpub cpuboard[2]; /* CPU board state */
 void help(void) {
 	fprintf(stderr, "   i\t\t--- execute an instruction "
 			"(one step execution)\n");
+	fprintf(stderr, "   a\t\t--- execute all instructions "
+			"(all steps execution)\n");
 	fprintf(stderr, "   c [addr]\t--- continue(start) execution "
 			"[to address(hex)]\n");
 	fprintf(stderr, "   d\t\t--- display the contents of registers\n");
@@ -108,6 +110,13 @@ int main() {
 		case 'i':
 			if (step(cpub) == RUN_HALT) {
 				fprintf(stderr, "Program Halted.\n");
+			}
+			break;
+		case 'a':
+			while (1) {
+				if (step(cpub) == RUN_HALT) {
+					fprintf(stderr, "Program Halted.\n");
+				}
 			}
 			break;
 		case 'c':
