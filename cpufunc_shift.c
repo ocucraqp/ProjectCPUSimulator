@@ -164,7 +164,7 @@ void RLA(Cpub *cpub) {
 	if (cpub->cf) {
 		result |= 0x01;
 	} else {
-		result &= 0xfe;
+		result &= 0xfe;;
 	}
 
 	if ((*argA & 0x80) == 0x80) {
@@ -173,7 +173,7 @@ void RLA(Cpub *cpub) {
 		cpub->cf = 0;
 	}
 
-	if ((*argA & 0x80) == (result & 0x80)) {
+	if ((*argA & 0x80) != (result & 0x80)) {
 		cpub->vf = 1;
 	} else {
 		cpub->vf = 0;

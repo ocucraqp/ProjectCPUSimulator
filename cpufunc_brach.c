@@ -14,109 +14,109 @@ int Bbc(Cpub *cpub) {
 	cpub->pc++;
 	switch (order_code) {
 	case 0x00:
-		//A
+		//A Always
 		cpub->pc = cpub->mem[cpub->pc];
 		return 1;
 	case 0x08:
-		//VF
+		//VF oVerFlow
 		if (cpub->vf == 1) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x01:
-		//NZ
+		//NZ Not Zero
 		if (cpub->zf == 0) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x09:
-		//Z
+		//Z Zero
 		if (cpub->zf == 1) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x02:
-		//ZP
+		//ZP Zero or Positive
 		if (cpub->nf == 0) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x0a:
-		//N
+		//N Negative
 		if (cpub->nf == 1) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x03:
-		//P
+		//P Positive
 		if ((cpub->nf) || ((cpub->zf) == 0)) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x0b:
-		//ZN
+		//ZN Zero or Negative
 		if ((cpub->nf) || ((cpub->zf) == 1)) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x04:
-		//NI
+		//NI No Input
 		if (cpub->ibuf->flag == 0) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x0c:
-		//NO
+		//NO No Output
 		if (cpub->obuf.flag == 1) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x05:
-		//NC
+		//NC No Carry
 		if (cpub->cf == 0) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x0d:
-		//C
+		//C Carry
 		if (cpub->cf == 1) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x06:
-		//GE
+		//GE Greater than or Equal
 		if (((cpub->vf) ^ (cpub->nf)) == 0) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x0e:
-		//LT
+		//LT Less Than
 		if (((cpub->vf) ^ (cpub->nf)) == 1) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x07:
-		//GT
+		//GT Greater Than
 		if ((((cpub->vf) ^ (cpub->nf)) || (cpub->zf)) == 0) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
 		}
 		break;
 	case 0x0f:
-		//LE
+		//LE Less than or Equal
 		if ((((cpub->vf) ^ (cpub->nf)) || (cpub->zf)) == 1) {
 			cpub->pc = cpub->mem[cpub->pc];
 			return 1;
