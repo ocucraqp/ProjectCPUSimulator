@@ -149,7 +149,6 @@ Uword *ReadNextPC(Cpub *cpub, int addrMode) {
 	 * 6:[IX+d]	IX qualified address (program area)
 	 * 7:(IX+d)	IX qualified address (data area)
 	 * */
-	Uword *a;
 
 	cpub->pc++;
 

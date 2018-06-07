@@ -11,11 +11,9 @@
 void OUT(Cpub *cpub) {
 	cpub->obuf.buf = cpub->acc;
 	cpub->obuf.flag = 1;
-	//todo
 }
 
 void IN(Cpub *cpub) {
 	cpub->acc = cpub->ibuf->buf;
-	cpub->obuf.flag = 0;
-	//todo
+	cpub->ibuf->flag = 0;
 }
