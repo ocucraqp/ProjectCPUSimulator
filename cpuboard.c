@@ -145,7 +145,7 @@ Uword *ReadNextPC(Cpub *cpub, int addrMode) {
 	/* addrMode
 	 * 2:d		Immediate address
 	 * 4:[d]	Absolute address (program area)
-	 * 5:(d)	Absolute address (data area)
+	 * 5:(d)	Absolute address (data area)1
 	 * 6:[IX+d]	IX qualified address (program area)
 	 * 7:(IX+d)	IX qualified address (data area)
 	 * */
@@ -159,9 +159,7 @@ Uword *ReadNextPC(Cpub *cpub, int addrMode) {
 	case 4:
 		return &cpub->mem[cpub->mem[cpub->pc]];
 	case 5:
-		a = &cpub->mem[cpub->mem[cpub->pc] + 0x100];
-		return a;
-		//todo
+		return &cpub->mem[cpub->mem[cpub->pc] + 0x100];
 	case 6:
 		return &cpub->mem[cpub->ix + cpub->mem[cpub->pc]];
 	case 7:
