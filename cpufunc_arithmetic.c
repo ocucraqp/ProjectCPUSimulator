@@ -15,9 +15,6 @@ void ADD(Cpub *cpub) {
 	argB = JudgeArgB(cpub);
 	result = *argA + *argB;
 	SetFlag(cpub, *argA, *argB, result, -1, 2, 2, 2);
-	if (cpub->cf) {
-		result -= 0x100;
-	}
 	*argA = result;
 }
 
@@ -43,9 +40,6 @@ void SUB(Cpub *cpub) {
 	argB2 = Convert2sComplement(*argB);
 	result = *argA + argB2;
 	SetFlag(cpub, *argA, argB2, result, -1, 2, 2, 2);
-	if (cpub->cf) {
-		result -= 0x100;
-	}
 	*argA = result;
 }
 

@@ -123,6 +123,7 @@ int main() {
 					fprintf(stderr, "Program Halted.\n");
 					break;
 				}
+				fprintf(stderr, "current pc=0x%02x", cpub->pc);
 			}
 			break;
 		case 'c':
