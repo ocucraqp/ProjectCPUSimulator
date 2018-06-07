@@ -6,6 +6,9 @@
  *	Descrioption:	resource definition of the educational computer board
  */
 
+#ifndef CPUBOARD_H
+#define CPUBOARD_H
+
 /*=============================================================================
  *   Architectural Data Types
  *===========================================================================*/
@@ -76,7 +79,27 @@ void EOR(Cpub *);
 
 void SRsm(Cpub *);
 
-void Bbc(Cpub *);
+void Ssm(Cpub *);
+
+void Rsm(Cpub *);
+
+void SRA(Cpub *);
+
+void SLA(Cpub *);
+
+void SRL(Cpub *);
+
+void SLL(Cpub *);
+
+void RRA(Cpub *);
+
+void RLA(Cpub *);
+
+void RRL(Cpub *);
+
+void RLL(Cpub *);
+
+int Bbc(Cpub *);
 
 void JAL(Cpub *);
 
@@ -88,4 +111,8 @@ Uword *JudgeArgB(Cpub *);
 
 Uword *ReadNextPC(Cpub *, int);
 
-void SetFlag(Cpub *, Uword, Uword, int, int, int, int);
+void SetFlag(Cpub *, Uword, Uword, int, int, int, int, int);
+
+Uword Convert2sComplement(Uword);
+
+#endif

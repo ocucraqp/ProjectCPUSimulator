@@ -113,9 +113,15 @@ int main() {
 			}
 			break;
 		case 'a':
+			if (cpub->mem[cpub->pc] == 0) {
+				fprintf(stderr, "No Program.\n");
+				cpub->pc++;
+				break;
+			}
 			while (1) {
 				if (step(cpub) == RUN_HALT) {
 					fprintf(stderr, "Program Halted.\n");
+					break;
 				}
 			}
 			break;
